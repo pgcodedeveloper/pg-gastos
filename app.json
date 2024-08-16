@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "app-gastos",
+    "name": "Control Gastos",
     "slug": "app-gastos",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -19,7 +19,11 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "permissions": [
+        "INTERNET"
+      ],
+      "package": "com.pgcode.appgastos"
     },
     "web": {
       "bundler": "metro",
@@ -31,6 +35,14 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "7bd211cf-e3e7-404f-bafc-34ba865c6e43"
+      }
     }
   }
 }

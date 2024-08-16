@@ -1,70 +1,62 @@
-import { Image, StyleSheet, Platform } from 'react-native';
-
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+import ScreenContainer from '@/components/navigation/ScreenContainer';
+import ContenedorPresupuesto from '@/components/ui/ContenedorPresupuesto';
+import ListadoGastos from '@/components/ui/ListadoGastos';
+import ListadoIngresos from '@/components/ui/ListadoIngresos';
+import { Colors } from '@/constants/Colors';
+import { useColorScheme } from '@/hooks/useColorScheme';
+import useAnimationStore from '@/store/animationStore';
+import { useAppState } from '@/store/appStore';
+import { usePathname } from 'expo-router';
+import { useEffect, useState } from 'react';
+import { Animated } from 'react-native';
+import { Card, SegmentedButtons, Text } from 'react-native-paper';
 
 export default function HomeScreen() {
-  return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({ ios: 'cmd + d', android: 'cmd + m' })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this starter app.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
-  );
+    const pathname = usePathname();
+    const iniciarApp = useAppState(state => state.iniciarApp);
+    const setScroll = useAnimationStore(store => store.setScrollY);
+    const [vista, setVista] = useState('ingresos');
+    
+    useEffect(() =>{
+        iniciarApp();
+
+    },[])
+    useEffect(() =>{
+        if(pathname == "/"){
+            setScroll(new Animated.Value(0));
+        }
+    },[pathname])
+    return (
+        <ScreenContainer style={{marginBottom: 25}}>
+            <ContenedorPresupuesto />
+            <Text variant='headlineMedium' style={{marginVertical: 15, textAlign: 'center', color: Colors[useColorScheme() == 'dark' ? 'dark' : 'light'].text, fontWeight: '900'}}>Administre su cuenta</Text>
+            <Card theme={{roundness: 3}} style={{ backgroundColor: `${Colors[useColorScheme() == 'dark' ? 'dark': 'light'].contenedor}`}} mode='elevated'>
+                <Card.Content>
+                    <SegmentedButtons
+                        value={vista}
+                        theme={{roundness: 1}}
+                        onValueChange={setVista}
+                        density='small'
+                        buttons={[
+                            {
+                                value: 'ingresos',
+                                label: 'Ingresos',
+                            },
+                            {
+                                value: 'gastos',
+                                label: 'Gastos',
+                            },
+                        ]}
+                    />
+                    
+                    {vista == 'ingresos' ? (
+                        <ListadoIngresos />
+                    ): (
+                        <ListadoGastos />
+                    )}
+                </Card.Content>
+            </Card>       
+        </ScreenContainer>
+    );
 }
 
-const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-  },
-});
