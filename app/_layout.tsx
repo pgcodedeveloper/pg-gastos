@@ -9,6 +9,8 @@ import { PaperProvider } from 'react-native-paper';
 import { useColorScheme as useColorSchemeSys } from 'react-native';
 import { useAppState } from '@/store/appStore';
 import { Theme } from '@/types/typesApp';
+import "./../global.css";
+import { GluestackUIProvider } from '@/components/ui/gluestack-ui-provider';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -38,10 +40,12 @@ export default function RootLayout() {
     return (
         <PaperProvider>
             <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-                <Stack>
-                    <Stack.Screen name="(tabs)" options={{ headerShown: false }}/>
-                    <Stack.Screen name="+not-found" />
-                </Stack>
+                <GluestackUIProvider mode={'dark'}>
+                    <Stack>
+                        <Stack.Screen name="(tabs)" options={{ headerShown: false }}/>
+                        <Stack.Screen name="+not-found" />
+                    </Stack>
+                </GluestackUIProvider>
             </ThemeProvider> 
         </PaperProvider>
     );

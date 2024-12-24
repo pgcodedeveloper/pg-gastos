@@ -1,6 +1,6 @@
 import { Animated } from "react-native";
 
-export interface Ingreso {
+export type Ingreso = {
     id: number;
     concepto: string;
     cantidad: number;
@@ -20,7 +20,7 @@ export enum Tipo{
 }
 
 
-export interface Gasto {
+export type Gasto = {
     id: number;
     concepto: string;
     cantidad: number;

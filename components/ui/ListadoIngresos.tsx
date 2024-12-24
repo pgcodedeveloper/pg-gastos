@@ -5,10 +5,13 @@ import { FontAwesome6, Ionicons } from '@expo/vector-icons'
 import React, { Fragment, useEffect, useState } from 'react'
 import {Text, View } from 'react-native'
 import { Button, Card, DataTable, Divider, Icon, IconButton, List, MD3Colors, TextInput, Text as Texto } from 'react-native-paper'
+import { Button as Boton } from './button'
 import DialogAlert from './Dialog'
+import { Text as TextoUi } from '@/components/ui/text';
 import ModalEdit from './ModalEdit'
 import { Ingreso } from '@/types/typesApp'
 import { useColorScheme } from '@/hooks/useColorScheme'
+import DrawerDatos from './DrawerDatos'
 
 const ListadoIngresos = () => {
     const colorSchema = useColorScheme();
@@ -20,6 +23,7 @@ const ListadoIngresos = () => {
     const showDialog = () => setVisible(true);
     const hideDialog = () => setVisible(false);
     const [visible, setVisible] = useState(false);
+    const [ openDrawer, setOpenDrawer ] = useState(false);
     const [idIngreso, setIdIngreso] = useState(0);
     const [modal, setModal] = useState(false);
     const [ingreso, setIngreso] = useState<Ingreso>({
@@ -70,18 +74,24 @@ const ListadoIngresos = () => {
                             <List.Item
                                 key={ingreso?.id}
                                 title={""}
+                                style={{ alignItems: 'center', justifyContent: 'space-between', width: '100%'}}
                                 left={() => (
-                                    <View style={{flexDirection: 'row', alignItems: 'center', gap: 25}}>
-                                        <FontAwesome6 name="money-bill-trend-up" size={30} color="#3B9CCF" />
-                                        <View style={{alignItems: 'flex-start', gap: 5}}>
-                                            <Text style={{ fontSize: 20, color: texto}}>{ingreso.concepto}</Text>
-                                            <Text style={{ fontSize: 15, color: texto}}>{formatearCantidad(ingreso.cantidad)}</Text>
-                                            <Text style={{ fontSize: 15, color: texto}}>{formatearFecha(ingreso.fecha.toString())}</Text>
+                                    <Boton variant='link' onPress={() => {
+                                        setIngreso(ingreso);
+                                        setOpenDrawer(true);
+                                    }}>
+                                        <View style={{flexDirection: 'row', alignItems: 'center',justifyContent: 'space-between', gap: 15, width: '85%'}}>
+                                            <FontAwesome6 name="money-bill-trend-up" size={30} color="#3B9CCF" />
+                                            <View style={{alignItems: 'flex-start', gap: 5,flex: 1}}>
+                                                <TextoUi size='lg' numberOfLines={2} style={{ color: texto}}>{ingreso.concepto}</TextoUi>
+                                                <Text style={{ fontSize: 15, color: texto}}>{formatearCantidad(ingreso.cantidad)}</Text>
+                                                <Text style={{ fontSize: 15, color: texto}}>{formatearFecha(ingreso.fecha.toString())}</Text>
+                                            </View>
                                         </View>
-                                    </View>
+                                    </Boton>
                                 )}
                                 right={() => (
-                                    <View style={{flexDirection: 'column', alignItems: 'center', gap: 5}}>
+                                    <View style={{flexDirection: 'column', alignItems: 'center', gap: 5, width: '15%'}}>
                                         <Button compact theme={{roundness: 1}} mode="text" onPress={() => {setIngreso(ingreso); setModal(true)}}>
                                             <FontAwesome6 name="pen-to-square" color="#9FE88D" size={20}/>
                                         </Button>
@@ -106,6 +116,8 @@ const ListadoIngresos = () => {
                             selectPageDropdownLabel={'Rows per page'}
                         />
                     </View>
+
+                    <DrawerDatos dato={ingreso} open={openDrawer} handleClose={() => setOpenDrawer(false)} />
                 </>
             ) : (
                 <List.Item title="No hay ingresos registrados" titleStyle={{textAlign: 'center', fontWeight: '700', marginTop: 10}}/>

@@ -41,7 +41,7 @@ const Settings = () => {
             <Card theme={{roundness: 3}} style={{ backgroundColor: `${Colors[colorScheme == 'dark' ? 'dark': 'light'].contenedor}`}}>
                 <Card.Content>
                     <Text style={{fontSize: 20, color: Colors[colorScheme == 'dark' ? 'dark' : 'light'].text}}>Información del la aplicación</Text>
-                    <Text style={{fontSize: 15, marginTop: 10, color: Colors[colorScheme == 'dark' ? 'dark' : 'light'].text}}>Versión 1.0.0</Text>
+                    <Text style={{fontSize: 15, marginTop: 10, color: Colors[colorScheme == 'dark' ? 'dark' : 'light'].text}}>Versión 1.1.0</Text>
                     <Text style={{fontSize: 15, marginTop: 10, color: Colors[colorScheme == 'dark' ? 'dark' : 'light'].text}}>Creado por: 
                         <Text style={{fontWeight: '900', color: '#3B9CCF'}}> PG.CODE</Text>
                     </Text>

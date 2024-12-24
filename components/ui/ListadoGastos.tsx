@@ -6,9 +6,12 @@ import { AntDesign, FontAwesome, FontAwesome5, FontAwesome6 } from '@expo/vector
 import React, { Fragment, useEffect, useState } from 'react'
 import { Text, View } from 'react-native';
 import { Button, Card, Chip, DataTable, Divider, List, TextInput, Text as Texto } from 'react-native-paper';
+import { Text as TextoUi } from '@/components/ui/text';
 import DialogAlert from './Dialog';
 import ModalEdit from './ModalEdit';
 import { useColorScheme } from '@/hooks/useColorScheme';
+import { Button as Boton } from './button'
+import DrawerDatos from './DrawerDatos';
 
 const IconosGasto = [
     {
@@ -60,6 +63,7 @@ const ListadoGastos = () => {
     const [selectedChip, setSelectedChip] = useState<Tipo | null>();
     const [idGasto, setIdGasto] = useState(0);
     const [visible, setVisible] = useState(false);
+    const [ openDrawer, setOpenDrawer ] = useState(false);
     const [modal, setModal] = useState(false);
     const [gasto, setGasto] = useState<Gasto>({
         id: 0,
@@ -125,8 +129,8 @@ const ListadoGastos = () => {
         <List.Section style={{marginHorizontal: 5}}>
             <List.Subheader style={{fontSize: 20, textAlign: 'center', marginTop: 15, fontWeight: '900', textTransform: 'uppercase', color: texto}}>Gastos</List.Subheader>
             
-            <List.Section style={{marginBottom: 10}}>   
-                <Text style={{color: texto, fontSize: 15, marginBottom: 15}}>Filtrar por categoria</Text>
+            <List.Section style={{marginBottom: 25}}>   
+                <Text style={{color: texto, fontSize: 15, marginBottom: 5}}>Filtrar por categoria</Text>
                 <View style={{flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'flex-start', gap: 5}}>
                     {categorias.map((c, i) => (
                         <Chip
@@ -143,27 +147,33 @@ const ListadoGastos = () => {
             
             
             {gastosCategoria?.length > 0 ? (
-                <>
+                <View className='mt-5'>
                     {gastosCategoria.slice(from, to).map(gasto => (
                         <Fragment key={gasto.id}>
                             <List.Item
                                 key={gasto?.id}
                                 title={""}
+                                style={{ alignItems: 'center', justifyContent: 'space-between', width: '100%'}}
                                 left={() => (
-                                    <View style={{flexDirection: 'row', alignItems: 'center',justifyContent: 'space-between', gap: 25}}>
-                                        
-                                        {getIcon(gasto.categoria)}
-                                           
-                                        <View style={{alignItems: 'flex-start', gap: 5}}>
-                                            <Text style={{ fontSize: 17, color: texto}}>{gasto.concepto}</Text>
-                                            <Text style={{ fontSize: 15, color: texto, fontWeight: '700'}}>{gasto.categoria}</Text>
-                                            <Text style={{ fontSize: 15, color: texto, fontWeight: '800'}}>{formatearCantidad(gasto.cantidad)}</Text>
-                                            <Text style={{ fontSize: 15, color: texto}}>{formatearFecha(gasto.fecha.toString())}</Text>
+                                    <Boton variant='link' onPress={() => {
+                                        setGasto(gasto);
+                                        setOpenDrawer(true);
+                                    }}>
+                                        <View style={{flexDirection: 'row', alignItems: 'center',justifyContent: 'space-between', gap: 15, width: '85%'}}>
+                                            
+                                            {getIcon(gasto.categoria)}
+                                            
+                                            <View style={{alignItems: 'flex-start', gap: 5,flex: 1}}>
+                                                <TextoUi numberOfLines={2} size='lg' style={{ color: texto}}>{gasto.concepto}</TextoUi>
+                                                <Text style={{ fontSize: 15, color: texto, fontWeight: '700'}}>{gasto.categoria}</Text>
+                                                <Text style={{ fontSize: 15, color: texto, fontWeight: '800'}}>{formatearCantidad(gasto.cantidad)}</Text>
+                                                <Text style={{ fontSize: 15, color: texto}}>{formatearFecha(gasto.fecha.toString())}</Text>
+                                            </View>
                                         </View>
-                                    </View>
+                                    </Boton>
                                 )}
                                 right={() => (
-                                    <View style={{flexDirection: 'column', alignItems: 'center', gap: 5}}>
+                                    <View style={{flexDirection: 'column', alignItems: 'center', gap: 5, width: '15%'}}>
                                         <Button compact theme={{roundness: 1}} mode="text" onPress={() => {setGasto(gasto); setModal(true)}}>
                                             <FontAwesome6 name="pen-to-square" color="#9FE88D" size={20}/>
                                         </Button>
@@ -188,7 +198,9 @@ const ListadoGastos = () => {
                             selectPageDropdownLabel={'Rows per page'}
                         />
                     </View>
-                </>
+
+                    <DrawerDatos dato={gasto} open={openDrawer} handleClose={() => setOpenDrawer(false)} />
+                </View>
             ) : (
                 <List.Item title="No hay gastos para esa categoria" titleStyle={{textAlign: 'center', fontWeight: '700', marginTop: 10}}/>
             )}
